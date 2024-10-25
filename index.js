@@ -1,15 +1,12 @@
 import "dotenv/config";
 import express from "express";
-import { Issuer } from "openid-client";
+import * as client from "openid-client";
 import session from "express-session";
 import morgan from "morgan";
-import * as crypto from "crypto";
 import bodyParser from "body-parser";
+import { chain, isObject } from "lodash-es";
 
 const port = parseInt(process.env.PORT, 10) || 3000;
-const origin = `${process.env.HOST}`;
-const redirectUri = `${origin}${process.env.CALLBACK_URL}`;
-
 const app = express();
 
 app.set("view engine", "ejs");
@@ -22,31 +19,35 @@ app.use(
 );
 app.use(morgan("combined"));
 
-const removeNullValues = (obj) => Object.entries(obj).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})
+const objToUrlParams = (obj) =>
+  new URLSearchParams(
+    chain(obj)
+      .omitBy((v) => !v)
+      .mapValues((o) => (isObject(o) ? JSON.stringify(o) : o))
+      .value(),
+  );
 
-const getMcpClient = async () => {
-  const mcpIssuer = await Issuer.discover(process.env.PC_PROVIDER);
+const getCurrentUrl = (req) =>
+  new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
 
-  return new mcpIssuer.Client({
-    client_id: process.env.PC_CLIENT_ID,
-    client_secret: process.env.PC_CLIENT_SECRET,
-    redirect_uris: [redirectUri],
-    response_types: ["code"],
-    id_token_signed_response_alg: process.env.PC_ID_TOKEN_SIGNED_RESPONSE_ALG,
-    userinfo_signed_response_alg:
-      process.env.PC_USERINFO_SIGNED_RESPONSE_ALG || null,
-  });
+const getProviderConfig = async () => {
+  return await client.discovery(
+    new URL(process.env.PC_PROVIDER),
+    process.env.PC_CLIENT_ID,
+    {
+      client_secret: process.env.PC_CLIENT_SECRET,
+      id_token_signed_response_alg: process.env.PC_ID_TOKEN_SIGNED_RESPONSE_ALG,
+      userinfo_signed_response_alg:
+        process.env.PC_USERINFO_SIGNED_RESPONSE_ALG || null,
+    },
+  );
 };
 
-const acr_values = process.env.ACR_VALUES
-  ? process.env.ACR_VALUES.split(",")
-  : null;
-const login_hint = process.env.LOGIN_HINT || null;
-const scope = process.env.PC_SCOPES;
 const AUTHORIZATION_DEFAULT_PARAMS = {
-  scope,
-  login_hint,
-  acr_values,
+  redirect_uri: `${process.env.HOST}${process.env.CALLBACK_URL}`,
+  scope: process.env.PC_SCOPES,
+  login_hint: process.env.LOGIN_HINT || null,
+  acr_values: process.env.ACR_VALUES ? process.env.ACR_VALUES.split(",") : null,
   claims: {
     id_token: {
       amr: {
@@ -75,19 +76,22 @@ app.get("/", async (req, res, next) => {
 const getAuthorizationControllerFactory = (extraParams) => {
   return async (req, res, next) => {
     try {
-      const client = await getMcpClient();
-      const nonce = crypto.randomBytes(16).toString("hex");
-      const state = crypto.randomBytes(16).toString("hex");
+      const config = await getProviderConfig();
+      const nonce = client.randomNonce();
+      const state = client.randomState();
 
       req.session.state = state;
       req.session.nonce = nonce;
 
-      const redirectUrl = client.authorizationUrl(removeNullValues({
-        nonce,
-        state,
-        ...AUTHORIZATION_DEFAULT_PARAMS,
-        ...extraParams,
-      }));
+      const redirectUrl = client.buildAuthorizationUrl(
+        config,
+        objToUrlParams({
+          nonce,
+          state,
+          ...AUTHORIZATION_DEFAULT_PARAMS,
+          ...extraParams,
+        }),
+      );
 
       res.redirect(redirectUrl);
     } catch (e) {
@@ -143,7 +147,7 @@ app.post(
   "/custom-connection",
   bodyParser.urlencoded({ extended: false }),
   (req, res, next) => {
-    const customParams = JSON.parse(req.body['custom-params'])
+    const customParams = JSON.parse(req.body["custom-params"]);
 
     return getAuthorizationControllerFactory(customParams)(req, res, next);
   },
@@ -151,19 +155,24 @@ app.post(
 
 app.get(process.env.CALLBACK_URL, async (req, res, next) => {
   try {
-    const client = await getMcpClient();
-    const params = client.callbackParams(req);
-    const tokenSet = await client.callback(redirectUri, params, {
-      nonce: req.session.nonce,
-      state: req.session.state,
+    const config = await getProviderConfig();
+    const currentUrl = getCurrentUrl(req);
+    const tokens = await client.authorizationCodeGrant(config, currentUrl, {
+      expectedNonce: req.session.nonce,
+      expectedState: req.session.state,
     });
 
     req.session.nonce = null;
     req.session.state = null;
-    req.session.userinfo = await client.userinfo(tokenSet.access_token);
-    req.session.idtoken = tokenSet.claims();
-    req.session.id_token_hint = tokenSet.id_token;
-    req.session.oauth2token = tokenSet;
+    const claims = tokens.claims();
+    req.session.userinfo = await client.fetchUserInfo(
+      config,
+      tokens.access_token,
+      claims.sub,
+    );
+    req.session.idtoken = claims;
+    req.session.id_token_hint = tokens.id_token;
+    req.session.oauth2token = tokens;
     res.redirect("/");
   } catch (e) {
     next(e);
@@ -174,11 +183,14 @@ app.post("/logout", async (req, res, next) => {
   try {
     const id_token_hint = req.session.id_token_hint;
     req.session.destroy();
-    const client = await getMcpClient();
-    const redirectUrl = client.endSessionUrl({
-      post_logout_redirect_uri: `${origin}/`,
-      id_token_hint,
-    });
+    const config = await getProviderConfig();
+    const redirectUrl = client.buildEndSessionUrl(
+      config,
+      objToUrlParams({
+        post_logout_redirect_uri: `${process.env.HOST}/`,
+        id_token_hint,
+      }),
+    );
 
     res.redirect(redirectUrl);
   } catch (e) {
