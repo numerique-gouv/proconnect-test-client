@@ -26,7 +26,7 @@
     "express-session": "^1.18.1",
     "lodash-es": "^4.17.21",
     "morgan": "^1.10.0",
-    "openid-client": "^6.1.6"
+    "openid-client": "^6.1.7"
   },
   "devDependencies": {
     "prettier": "^3.4.1"
