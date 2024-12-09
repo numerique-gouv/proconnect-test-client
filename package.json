@@ -29,7 +29,7 @@
     "openid-client": "^6.1.6"
   },
   "devDependencies": {
-    "prettier": "^3.4.1"
+    "prettier": "^3.4.2"
   },
   "packageManager": "npm@10.5.2+sha256.df0a1f7691654b94786013e5d5b80a873a7ffbae9c82c3bec8b5db76bc3b7dfd",
   "engines": {
