@@ -1,0 +1,69 @@
+<div class="onboarding-container">
+	<div>
+		<h1 class="fr-h3">Renforcer la sécurité du compte</h1>
+		<div class="fr-alert fr-alert--info fr-mb-5w">
+			<h3 class="fr-alert__title">
+				DataPass exige la mise en place de la double authentification
+				(2FA)
+			</h3>
+			<p>
+				<a
+					href="https://proconnect.crisp.help/fr/article/quest-ce-que-la-double-authentification-1m5mpmj/"
+					>En savoir plus</a
+				>
+				sur la double authentification
+			</p>
+		</div>
+		<p>
+			<b>Où voulez-vous mettre en place la double authentification ?</b>
+		</p>
+		<fieldset
+			class="fr-fieldset"
+			id="radio-hint"
+			aria-labelledby="radio-hint-legend radio-hint-messages"
+		>
+			<div class="fr-fieldset__element">
+				<div class="fr-radio-group">
+					<input type="radio" id="radio-hint-1" name="radio-hint" />
+					<label class="fr-label" for="radio-hint-1">
+						Sur tous les sites qui utilisent ProConnect
+					</label>
+				</div>
+			</div>
+			<div class="fr-fieldset__element">
+				<div class="fr-radio-group">
+					<input type="radio" id="radio-hint-2" name="radio-hint" />
+					<label class="fr-label" for="radio-hint-2">
+						Uniquement sur les sites qui l'exigent
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<a href="/2fa">
+			<button class="fr-btn btn--fullwidth" id="submitButton" disabled>
+				Commencer
+			</button>
+		</a>
+		<%- include('../partials/go-back.ejs'); %>
+	</div>
+	<div class="centered-container">
+		<img src="/2fa.svg" alt="" />
+	</div>
+</div>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		// Sélectionner les éléments
+		const radioButtons = document.querySelectorAll(
+			'input[name="radio-hint"]'
+		);
+		const submitButton = document.getElementById("submitButton");
+
+		// Ajouter un écouteur d'événement à chaque bouton radio
+		radioButtons.forEach(function (radio) {
+			radio.addEventListener("change", function () {
+				// Activer le bouton si un bouton radio est sélectionné
+				submitButton.disabled = false;
+			});
+		});
+	});
+</script>

@@ -1,4 +1,4 @@
-# ProConnect Test Client
+# ProConnect Identité Usability Test Client
 
 This is a minimal, nodeJS-based ProConnect client, to be used for end-to-end testing.
 
@@ -9,45 +9,6 @@ This tool can be used to test the traditional Authorization Code Flow.
 It also uses the `select_organization` & `update_userinfo` ProConnect prompts (available only on ProConnect Identité).
 
 This tool is fully configured using environment variables.
-
-## Run it with Docker
-
-Pull the image:
-
-```
-docker pull ghcr.io/numerique-gouv/proconnect-test-client
-```
-
-Run the container:
-
-```
-docker run --rm \
--p 3000:3000 \
--e PORT=3000 \
-ghcr.io/numerique-gouv/proconnect-test-client
-```
-
-## Run it with Docker Compose
-
-In `docker-compose.yml`:
-
-```yaml
-version: "3.5"
-
-services:
-  proconnect-test-client:
-    image: numerique-gouv/proconnect-test-client
-    ports:
-      - 3000:3000
-    environment:
-      PORT: 3000
-```
-
-Run the container:
-
-```
-docker-compose up
-```
 
 ## Run it with Node.js v16 or higher
 

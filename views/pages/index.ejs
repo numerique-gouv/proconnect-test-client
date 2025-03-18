@@ -1,0 +1,95 @@
+<div class="fr-container fr-my-5w">
+	<% if (!locals.userinfo) { %>
+		<div class="fr-grid-row fr-grid-row--middle">
+			<div class="fr-col-sm-12 fr-col-md-5">
+				<img
+					alt="Welcome Page Logo"
+					class="fr-responsive-img"
+					src="/welcome.svg"
+					data-fr-js-ratio="true"
+				/>
+			</div>
+			<div class="fr-col-sm-12 fr-col-md-7">
+				<h1>Bienvenue sur DataPass !</h1>
+				<p>
+					DataPass, c’est le service qui vous permet de profiter
+					facilement d’habilitations conformes entre
+					administrations et d’accéder à des données et services
+					en accès restreint.
+				</p>
+				<div class="fr-h6">
+					Pour suivre vos demandes d'habilitation
+				</div>
+				<form action="/login" method="post">
+					<button class="proconnect-button">
+						<span class="proconnect-sr-only"
+							>S’identifier avec ProConnect</span
+						>
+					</button>
+				</form>
+				<p>
+					<a
+						href="https://www.proconnect.gouv.fr/"
+						target="_blank"
+						rel="noopener noreferrer"
+						title="Qu’est-ce que ProConnect ? - nouvelle fenêtre"
+					>
+						Qu’est-ce que ProConnect ?
+					</a>
+				</p>
+			</div>
+		</div>
+	<% } %>
+	<% if (locals.userinfo) { %>
+		<h1>Votre compte</h1>
+		<% userinfo = JSON.parse(locals.userinfo) %>
+		<div class="fr-grid-row fr-grid-row--gutters">
+			<div class="fr-col-12 fr-col-lg-6">
+				<div id="authorization_request_card_user_44597" class="fr-basic-card">
+					<div class="fr-col">
+						<h3>
+							Vous êtes
+						</h3>
+						<ul>
+							<li>
+								<strong><%= userinfo["family_name"] %> <%= userinfo["given_name"] %></strong>
+							</li>
+							<li>
+								<%= userinfo["email"] %>
+							</li>
+							<li>
+								<%= userinfo["job"] %>
+							</li>
+						</ul>
+					</div>
+					<form action="/update-userinfo" method="post">
+						<button name="button" type="submit" id="update-userinfo" class="fr-btn fr-mt-2w"> 
+							Mettre à jour mes informations
+						</button>
+					</form>
+				</div>
+			</div>
+			<div class="fr-col-12 fr-col-lg-6">
+				<div id="authorization_request_card_user_44597" class="fr-basic-card">
+					<div class="fr-col">
+						<h3>
+							Organisation
+						</h3>
+						<ul>
+							<li>
+								<strong><%= userinfo["label"] %></strong>
+							</li>
+							<li>
+								<%= userinfo["siret"] %>
+							</li>
+						</ul>
+					</div>
+					<form action="/select-organization" method="post">
+						<button class="fr-btn fr-mt-2w" id="select-organization">Changer d’organisation</button>
+					</form>
+				</div>
+			</div>
+			
+		</div>
+	<% } %>
+</div>

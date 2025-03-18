@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr-FR">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title><%= locals.title %></title>
+		<link
+			rel="apple-touch-icon"
+			href="/dsfr/favicon/apple-touch-icon.png?v=1.12.1"
+		/>
+		<link
+			rel="icon"
+			href="/dsfr/favicon/favicon.svg?v=1.12.1"
+			type="image/svg+xml"
+		/>
+		<link
+			rel="shortcut icon"
+			href="/dsfr/favicon/favicon.ico?v=1.12.1"
+			type="image/x-icon"
+		/>
+		<link
+			rel="manifest"
+			href="/dsfr/favicon/manifest.webmanifest?v=1.12.1"
+			crossorigin="use-credentials"
+		/>
+		<link rel="stylesheet" href="/common.css" />
+		<link rel="stylesheet" href="/dsfr/dsfr.min.css" />
+		<link rel="stylesheet" href="/dsfr/utility/utility.min.css" />
+	</head>
+	<body>
+		<%- include('../partials/header.ejs'); %>
+		<main><%- body %></main>
+		<%- include('../partials/footer.ejs'); %>
+		<script src="/dsfr/dsfr.module.min.js" type="module"></script>
+		<script src="/dsfr/dsfr.nomodule.min.js" nomodule></script>
+	</body>
+</html>

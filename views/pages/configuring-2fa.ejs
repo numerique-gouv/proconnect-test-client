@@ -1,0 +1,157 @@
+<div class="onboarding-container">
+	<div>
+		<h1 class="fr-h3">Configurer la double authentification (2FA)</h1>
+		<p>Choisir parmi nos méthodes d'authentification</p>
+		<fieldset
+			class="fr-fieldset fr-mb-0"
+			id="radio-rich"
+			aria-labelledby="radio-rich-legend radio-rich-messages"
+		>
+			<div class="fr-fieldset__element">
+				<div class="fr-radio-group fr-radio-rich">
+					<input
+						value="totp"
+						type="radio"
+						id="radio-rich-totp"
+						name="radio-rich"
+					/>
+					<label class="fr-label" for="radio-rich-totp">
+						Code à usage unique
+					</label>
+					<div class="fr-radio-rich__pictogram">
+						<img
+							src="/single-use-code.svg"
+							alt=""
+							width="80"
+							height="80"
+							aria-hidden="true"
+							class="fr-artwork"
+						/>
+					</div>
+				</div>
+			</div>
+			<div class="fr-fieldset__element">
+				<div class="fr-radio-group fr-radio-rich">
+					<input
+						value="passkey"
+						type="radio"
+						id="radio-rich-passkey"
+						name="radio-rich"
+					/>
+					<label class="fr-label" for="radio-rich-passkey">
+						Clé d'accès (passkey)
+					</label>
+					<div class="fr-radio-rich__pictogram">
+						<img
+							src="/padlock.svg"
+							alt=""
+							width="80"
+							height="80"
+							aria-hidden="true"
+							class="fr-artwork"
+						/>
+					</div>
+				</div>
+			</div>
+			<div
+				class="fr-messages-group"
+				id="radio-rich-messages"
+				aria-live="polite"
+			></div>
+		</fieldset>
+		<button
+			class="fr-btn btn--fullwidth fr-mb-2w"
+			id="submitButton"
+			disabled
+		>
+			Continuer
+		</button>
+		<div class="pc-background-alt-blue-france fr-p-3w">
+			<h2 class="fr-h6 pc-blue-france">
+				Vous hésitez ? Voyons cela ensemble.
+			</h2>
+			<p>Quel appareil ou outil préférez-vous utiliser ?</p>
+			<ul class="fr-tags-group">
+				<li>
+					<a
+						href="#"
+						class="fr-tag pc-background-white tag-option"
+						data-target="smartphone-text"
+						target="_self"
+						>Smartphone</a
+					>
+				</li>
+				<li>
+					<a
+						href="#"
+						class="fr-tag pc-background-white tag-option"
+						data-target="password-text"
+						target="_self"
+						>Gestionnaire de mot de passe</a
+					>
+				</li>
+				<li>
+					<a
+						href="#"
+						class="fr-tag pc-background-white tag-option"
+						data-target="pc-mac-text"
+						target="_self"
+						>PC ou Mac</a
+					>
+				</li>
+			</ul>
+			<div id="smartphone-text" class="tag-content" style="display: none">
+				<p>
+					👉 Utilisez <b>la clé d’accès</b> <br />Si vous utilisez
+					FaceID ou les empreintes digitales
+				</p>
+				<p class="fr-mb-1w">
+					👉 Sinon, utilisez une
+					<b>application d’authentification</b> <br />Vous êtes libre
+					de choisir celle qui vous convient.
+				</p>
+				<a
+					href="https://proconnect.crisp.help/fr/"
+					target="_blank"
+					class="pc-blue-france"
+					>En savoir plus</a
+				>
+			</div>
+			<div id="password-text" class="tag-content" style="display: none">
+				<p>
+					👉 Utilisez la <b>clé d’accès</b> ou bien le
+					<b>code à usage unique</b>
+				</p>
+				<p class="fr-mb-1w">
+					Vérifiez quelles sont les options supportées par votre
+					gestionnaire. La majorité des gestionnaires ont ces
+					fonctionnalités.
+				</p>
+				<a
+					href="https://proconnect.crisp.help/fr/"
+					target="_blank"
+					class="pc-blue-france"
+					>En savoir plus</a
+				>
+			</div>
+			<div id="pc-mac-text" class="tag-content" style="display: none">
+				<p>👉 Utilisez <b>la clé d’accès !</b></p>
+				<p class="fr-mb-1w">
+					Laissez faire votre ordinateur PC ou Mac pour la
+					configuration.
+				</p>
+				<a
+					href="https://proconnect.crisp.help/fr/"
+					target="_blank"
+					class="pc-blue-france"
+					>En savoir plus</a
+				>
+			</div>
+		</div>
+		<%- include('../partials/go-back.ejs'); %>
+	</div>
+	<div class="centered-container">
+		<img src="/2fa.svg" alt="" />
+	</div>
+</div>
+<script type="text/javascript" src="/js/2fa.js" defer></script>
