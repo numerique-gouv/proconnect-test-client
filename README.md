@@ -1,5 +1,7 @@
 # ProConnect Test Client
 
+testing https://github.com/numerique-gouv/proconnect-identite/pull/1020
+
 This is a minimal, nodeJS-based ProConnect client, to be used for end-to-end testing.
 
 It uses the https://github.com/panva/node-openid-client Library for the actual OIDC Logic.
