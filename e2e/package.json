@@ -8,7 +8,7 @@
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^22.2.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
-    "cypress": "^14.5.1",
+    "cypress": "^14.5.2",
     "typescript": "^5.8.3"
   },
   "packageManager": "npm@10.5.0+sha256.17ca6e08e7633b624e8f870db81a78f46afe119de62bcaf0a7407574139198fc"
